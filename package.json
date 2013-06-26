@@ -12,6 +12,9 @@
     "type": "git",
     "url": "https://github.com/dbrain/mongopenter.git"
   },
+  "bin": {
+    "couchpenter": "./bin/mongopenter"
+  },
   "main": "./lib/mongopenter",
   "dependencies": {
     "async": "~0.2.9",
