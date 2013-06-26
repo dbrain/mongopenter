@@ -1,0 +1,13 @@
+{
+  "build": "clean lint complexity test coverage",
+  "test": {
+    "type": "mocha"
+  },
+  "coverage": {
+    "type": "mocha-istanbul",
+    "files": "`find .bob/instrumented/test/ -name \"*.js\" | sort | tr \"\\r\\n\" \" \"`"
+  },
+  "complexity": {
+    "type": "jscheckstyle"
+  }
+}

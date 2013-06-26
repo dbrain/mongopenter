@@ -1,0 +1,20 @@
+{
+  "options": [
+    { "arg": "-u, --urls [urls]", "desc": "MongoDb URL in format mongodb://[username:password@]host1[:port1]/database[,host2[:port2]/database, default: mongodb://localhost/admin" },
+    { "arg": "-f, --setup-file [setupFile]", "desc": "Setup file, default: mongopenter.json" }
+  ],
+  "commands": {
+    "setup": {
+      "desc": "Create databases and documents, overwrite if documents exist"
+    },
+    "setup-db": {
+      "desc": "Create databases only"
+    },
+    "setup-collection": {
+      "desc": "Create collections only"
+    },
+    "setup-doc": {
+      "desc": "Create documents only, does not overwrite if exist"
+    }
+  }
+}

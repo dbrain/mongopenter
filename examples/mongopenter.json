@@ -1,0 +1,45 @@
+{
+  "auth": {
+    "user": "globalAuthGoesHere",
+    "password": "whatHeSaid"
+  },
+  "databases": {
+    "anotherDatabaseName": {
+      "collections": [
+        "yetAnotherCollection"
+      ]
+    },
+    "databaseName": {
+      "auth": {
+        "user": "databaseSpecificAuth",
+        "password": "bothGlobalAndSpecificAuthWillBeAppliedIfBothSpecified"
+      },
+      "collections": [
+        {
+          "name": "aCollection",
+          "docs": [
+            {
+              "query": {
+                "aKey2": "aValue2"
+              },
+              "doc": {
+                "aKey2": "aValue2"
+              }
+            },
+            "./aDocWithExports",
+            {
+              "query": {
+                "aKey1": "aValue1"
+              },
+              "doc": "./aDoc.json"
+            }
+          ]
+        },
+        "anotherCollection"
+      ]
+    }
+  },
+  "scripts": [
+    "./script.js"
+  ]
+}
