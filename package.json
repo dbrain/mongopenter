@@ -13,7 +13,7 @@
     "url": "https://github.com/dbrain/mongopenter.git"
   },
   "bin": {
-    "couchpenter": "./bin/mongopenter"
+    "mongopenter": "./bin/mongopenter"
   },
   "main": "./lib/mongopenter",
   "dependencies": {
