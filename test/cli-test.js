@@ -1,5 +1,5 @@
 var cli = require('../lib/cli');
-var Mongopenter = require('../lib/mongopenter');
+var Mongopenter = require('../lib/mongopenter').Mongopenter;
 var sinon = require('sinon');
 var should = require('should');
 var bag = require('bagofcli');

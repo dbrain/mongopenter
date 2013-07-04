@@ -1,5 +1,5 @@
 var MongoClient = require('mongodb').MongoClient;
-var Mongopenter = require('../lib/mongopenter');
+var Mongopenter = require('../lib/mongopenter').Mongopenter;
 var async = require('async');
 var should = require('should');
 var testDb = 'mongodb://localhost/admin';

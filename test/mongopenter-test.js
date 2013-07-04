@@ -1,4 +1,4 @@
-var Mongopenter = require('../lib/mongopenter');
+var Mongopenter = require('../lib/mongopenter').Mongopenter;
 var should = require('should');
 var sinon = require('sinon');
 var path = require('path');
