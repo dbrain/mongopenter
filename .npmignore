@@ -1,0 +1,7 @@
+.git
+.gitignore
+.bob
+.bob.json
+test
+test-integration
+*.log
