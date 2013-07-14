@@ -2,7 +2,7 @@ var Db = require('../lib/db');
 var should = require('should');
 var sinon = require('sinon');
 var path = require('path');
-var MongoClient = require('mongodb').MongoClient;
+var mongodb = require('mongodb');
 
 describe('Db', function () {
 
@@ -145,7 +145,7 @@ describe('Db', function () {
         { name: 'anotherdatabase', options: {} }
       ];
 
-      var connectStub = this.sinon.stub(MongoClient, 'connect');
+      var connectStub = this.sinon.stub(mongodb, 'connect');
       connectStub.callsArgWith(1, null, this.connectionStub);
       this.dbStub.addUser.callsArgWith(2, null, 'oh i lied');
 
@@ -164,7 +164,7 @@ describe('Db', function () {
         { name: 'adatabase', options: { auth: { user: 'cheese', password: 'bacon' }} }
       ];
 
-      var connectStub = this.sinon.stub(MongoClient, 'connect');
+      var connectStub = this.sinon.stub(mongodb, 'connect');
       connectStub.callsArgWith(1, null, this.connectionStub);
       this.dbStub.addUser.callsArgWith(2, 'done borked', 'oh i lied');
 
@@ -178,7 +178,7 @@ describe('Db', function () {
       var db = new Db(this.mongopenter, { urls: 'aUrl', setup: {} });
       db.databases = [ { name: 'adatabase', options: {} } ];
 
-      var connectStub = this.sinon.stub(MongoClient, 'connect');
+      var connectStub = this.sinon.stub(mongodb, 'connect');
       connectStub.callsArgWith(1, null, this.connectionStub);
 
       db.createDatabases(this.cbStub);
@@ -197,7 +197,7 @@ describe('Db', function () {
       var db = new Db(this.mongopenter, { urls: 'aUrl', setup: {} });
       db.databases = [];
 
-      var connectStub = this.sinon.stub(MongoClient, 'connect');
+      var connectStub = this.sinon.stub(mongodb, 'connect');
       connectStub.callsArgWith(1, 'i be broken');
 
       db.createDatabases(this.cbStub);
@@ -213,7 +213,7 @@ describe('Db', function () {
         { db: 'anotherDb', name: 'anotherCollection' }
       ];
 
-      var connectStub = this.sinon.stub(MongoClient, 'connect');
+      var connectStub = this.sinon.stub(mongodb, 'connect');
       connectStub.callsArgWith(1, null, this.connectionStub);
       this.dbStub.collectionNames.callsArgWith(0, null, [ 'anotherDb.anotherCollection', { name: 'dodgyMongoDbDriverDoc' } ]);
       this.dbStub.createCollection.callsArgWith(1, null, 'aCollection');
@@ -236,7 +236,7 @@ describe('Db', function () {
       var db = new Db(this.mongopenter, { urls: 'aUrl', setup: {} });
       db.collections = [];
 
-      var connectStub = this.sinon.stub(MongoClient, 'connect');
+      var connectStub = this.sinon.stub(mongodb, 'connect');
       connectStub.callsArgWith(1, 'i be broken');
 
       db.createCollections(this.cbStub);
@@ -247,7 +247,7 @@ describe('Db', function () {
       var db = new Db(this.mongopenter, { urls: 'aUrl', setup: {} });
       db.collections = [ { db: 'adb', name: 'acollection' } ];
 
-      var connectStub = this.sinon.stub(MongoClient, 'connect');
+      var connectStub = this.sinon.stub(mongodb, 'connect');
       connectStub.callsArgWith(1, null, this.connectionStub);
       this.dbStub.collectionNames.callsArgWith(0, 'darn broked it');
 
@@ -259,7 +259,7 @@ describe('Db', function () {
       var db = new Db(this.mongopenter, { urls: 'aUrl', setup: {} });
       db.collections = [ { db: 'adb', name: 'acollection' } ];
 
-      var connectStub = this.sinon.stub(MongoClient, 'connect');
+      var connectStub = this.sinon.stub(mongodb, 'connect');
       connectStub.callsArgWith(1, null, this.connectionStub);
       this.dbStub.collectionNames.callsArgWith(0, null, []);
       this.dbStub.createCollection.callsArgWith(1, 'bugger');
@@ -278,7 +278,7 @@ describe('Db', function () {
         { db: 'anotherdb', collection: 'anothercollection', query: 'anotherquery', doc: 'anotherdoc' }
       ];
 
-      var connectStub = this.sinon.stub(MongoClient, 'connect');
+      var connectStub = this.sinon.stub(mongodb, 'connect');
       connectStub.callsArgWith(1, null, this.connectionStub);
       this.dbStub.collection.callsArgWith(1, null, this.collectionStub);
       this.collectionStub.findOne.withArgs('aquery').callsArgWith(1);
@@ -302,7 +302,7 @@ describe('Db', function () {
       var db = new Db(this.mongopenter, { urls: 'aUrl', setup: {} });
       db.documents = [];
 
-      var connectStub = this.sinon.stub(MongoClient, 'connect');
+      var connectStub = this.sinon.stub(mongodb, 'connect');
       connectStub.callsArgWith(1, 'i be broken');
 
       db.createDocuments(this.cbStub);
@@ -313,7 +313,7 @@ describe('Db', function () {
       var db = new Db(this.mongopenter, { urls: 'aUrl', setup: {} });
       db.documents = [ { query: 'a', doc: 'b' }];
 
-      var connectStub = this.sinon.stub(MongoClient, 'connect');
+      var connectStub = this.sinon.stub(mongodb, 'connect');
       connectStub.callsArgWith(1, null, this.connectionStub);
       this.dbStub.collection.callsArgWith(1, 'doh');
 
@@ -325,7 +325,7 @@ describe('Db', function () {
       var db = new Db(this.mongopenter, { urls: 'aUrl', setup: {} });
       db.documents = [ { query: 'a', doc: 'b' }];
 
-      var connectStub = this.sinon.stub(MongoClient, 'connect');
+      var connectStub = this.sinon.stub(mongodb, 'connect');
       connectStub.callsArgWith(1, null, this.connectionStub);
       this.dbStub.collection.callsArgWith(1, null, this.collectionStub);
       this.collectionStub.findOne.callsArgWith(1, 'BAD');

@@ -23,6 +23,48 @@ describe('Mongpenter', function () {
     });
   });
 
+  describe('#getConnectionStringFromUrlArray', function () {
+    it('should product a whacky mongo driver format url', function () {
+      var urls = [
+        'mongodb://username:password@ahost1:1000/database',
+        'mongodb://username:password@ahost2:1000/database',
+        'mongodb://username:password@ahost3:1000/database',
+        'mongodb://username:password@ahost4:1000/database'
+      ];
+      var connectionString = Mongopenter.getConnectionStringFromUrlArray(urls);
+      console.log(connectionString);
+      connectionString.should.eql('mongodb://username:password@ahost1:1000,ahost2:1000,ahost3:1000,ahost4:1000/database');
+    });
+
+    it('should be ok with no auth', function () {
+      var urls = [
+        'mongodb://ahost1:1000/database',
+        'mongodb://ahost2:1000/database',
+        'mongodb://ahost3:1000/database',
+        'mongodb://ahost4:1000/database'
+      ];
+      var connectionString = Mongopenter.getConnectionStringFromUrlArray(urls);
+      console.log(connectionString);
+      connectionString.should.eql('mongodb://ahost1:1000,ahost2:1000,ahost3:1000,ahost4:1000/database');
+    });
+
+    it('should be ok with no db', function () {
+      var urls = [
+        'mongodb://ahost1:1000',
+        'mongodb://ahost2:1000',
+        'mongodb://ahost3:1000',
+        'mongodb://ahost4:1000'
+      ];
+      var connectionString = Mongopenter.getConnectionStringFromUrlArray(urls);
+      console.log(connectionString);
+      connectionString.should.eql('mongodb://ahost1:1000,ahost2:1000,ahost3:1000,ahost4:1000');
+    });
+
+    it('should just return if given a string', function () {
+      Mongopenter.getConnectionStringFromUrlArray('astring').should.eql('astring');
+    });
+  });
+
   describe('#init', function () {
     it('should proritise urls by parameter, env then default', function () {
       var mongopenter = new Mongopenter('imgoingtowin', {});
