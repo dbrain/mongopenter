@@ -79,10 +79,10 @@ describe('Mongpenter', function () {
       mongopenter.options.urls.should.eql('mongodb://localhost/admin');
     });
 
-    it('should proritise setupFile by parameter then default', function () {
+    it('should prioritise setupFile by parameter then default', function () {
       this.mongopenter.options.setupFile.should.eql(path.join(process.cwd(), 'test/fixtures/dummySetupFile.json'));
 
-      mongopenter = new Mongopenter(null, {});
+      var mongopenter = new Mongopenter(null, {});
       mongopenter.options.setupFile.should.eql(path.join(process.cwd(), 'mongopenter.json'));
     });
 
@@ -117,7 +117,7 @@ describe('Mongpenter', function () {
       var tasksStub = this.sinon.stub(this.mongopenter, '_tasks');
       var notifyStub = this.sinon.stub(this.mongopenter, '_notify');
       this.mongopenter.setup(this.cbStub);
-      tasksStub.calledWith([ 'createDatabases', 'createCollections', 'createDocuments' ]).should.eql(true);
+      tasksStub.calledWith([ 'createShards', 'createDatabases', 'createCollections', 'createDocuments', 'addShards' ]).should.eql(true);
       (typeof(tasksStub.firstCall.args[1])).should.eql('function');
     });
   });
