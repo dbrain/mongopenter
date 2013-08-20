@@ -10,9 +10,19 @@ describe('Db', function () {
     this.sinon = sinon.sandbox.create();
     this.consoleInfoStub = this.sinon.stub(console, 'log');
     this.consoleErrorStub = this.sinon.stub(console, 'error');
-    this.collectionStub = { findOne: this.sinon.stub(), insert: this.sinon.stub() };
-    this.dbStub = { addUser: this.sinon.stub(), collectionNames: this.sinon.stub(), createCollection: this.sinon.stub(), collection: this.sinon.stub() };
-    this.connectionStub = { db: this.sinon.stub().returns(this.dbStub), collection: this.sinon.stub(), close: this.sinon.stub() };
+    this.collectionStub = { findOne: this.sinon.stub(), 
+                            insert: this.sinon.stub(), 
+                            update: this.sinon.stub() };
+    this.dbStub = { addUser: this.sinon.stub(), 
+                    collectionNames: this.sinon.stub(), 
+                    createCollection: this.sinon.stub(), 
+                    collection: this.sinon.stub()
+    };
+    this.connectionStub = { db: this.sinon.stub().returns(this.dbStub), 
+      collection: this.sinon.stub(), 
+      close: this.sinon.stub(),
+      command: this.sinon.stub()
+    };
     this.mongopenter = {
       resolveFile: function (aPath) {
         return path.resolve(__dirname, '../', aPath);
@@ -335,4 +345,61 @@ describe('Db', function () {
       this.cbStub.calledWith('BAD').should.eql(true);
     });
   });
+
+  describe('#createShards', function () {
+    it('should create shards to the new database', function () {
+      var db = new Db(this.mongopenter, { urls: 'aUrl', 
+        shards: {hosts: ['1.1.1.1', '2.2.2.2']}, 
+        setup: { } });
+
+      db.databases = [
+        { name: 'adatabase', options: { } }
+      ];
+      
+      var connectStub = this.sinon.stub(mongodb, 'connect');
+      connectStub.callsArgWith(1, null, this.connectionStub);
+
+      this.connectionStub.command.callsArgWith(1, null, "res");
+      db.createShards(this.cbStub);
+
+      connectStub.calledWith('aUrl').should.eql(true);
+      this.connectionStub.command.calledWith({addshard: '1.1.1.1'}).should.eql(true);
+      this.connectionStub.command.calledWith({addshard: '2.2.2.2'}).should.eql(true);
+    });
+  });
+
+  describe('#addShards', function () {
+    it('should add shards to the new database', function () {
+      var db = new Db(this.mongopenter, { urls: 'aUrl', 
+        shards: { keyMap: {'mac': 'apple', 'ubuntu': 'banana'}},
+        setup: { shards : { shardDb: 'adatabase', 
+                            shardCollection: 'acollection',
+                            shardKey: 'akey',
+                            shardTags: [{'shard': 'shard0000', 'tag': 'apple'}]}} });
+      db.databases = [
+        { name: 'adatabase', options: { } }
+      ];
+      
+      var connectStub = this.sinon.stub(mongodb, 'connect');
+      connectStub.callsArgWith(1, null, this.connectionStub);
+
+      this.dbStub.collection.callsArgWith(1, null, this.collectionStub);
+
+      this.collectionStub.findOne.withArgs({_id: 'shard0000'}).callsArgWith(1, null, {a:1});
+      this.collectionStub.update.callsArgWith(2, null, {});
+      this.connectionStub.command.callsArgWith(1, null, "res");
+
+      var updateStub = {update: this.sinon.stub()};
+      this.dbStub.collection.callsArgWith(1, null, updateStub);
+
+      db.addShards(this.cbStub);
+
+      this.collectionStub.findOne.called.should.eql(true);
+      this.collectionStub.update.calledWith({_id: 'shard0000'}).should.eql(true);
+      this.connectionStub.command.calledWith({enableSharding: 'adatabase'}).should.eql(true);
+      this.connectionStub.command.calledWith({shardCollection: 'acollection', key: {shardKey: 1}}).should.eql(true);
+      updateStub.update.called.should.eql(true);
+    });
+  });
+
 });
