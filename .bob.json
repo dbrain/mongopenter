@@ -1,13 +1,10 @@
 {
-  "build": "clean lint complexity test test-integration coverage",
+  "build": "clean lint complexity test coverage test-integration",
   "test": {
     "type": "mocha"
   },
   "coverage": {
     "type": "mocha-istanbul",
     "files": "`find .bob/instrumented/test/ -name \"*.js\" | sort | tr \"\\r\\n\" \" \"`"
-  },
-  "complexity": {
-    "type": "jscheckstyle"
   }
 }

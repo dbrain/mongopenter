@@ -1,6 +1,6 @@
 {
   "name": "mongopenter",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "MongoDb database and user setup tool",
   "keywords": [
     "mongodb",

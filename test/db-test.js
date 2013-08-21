@@ -10,16 +10,16 @@ describe('Db', function () {
     this.sinon = sinon.sandbox.create();
     this.consoleInfoStub = this.sinon.stub(console, 'log');
     this.consoleErrorStub = this.sinon.stub(console, 'error');
-    this.collectionStub = { findOne: this.sinon.stub(), 
-                            insert: this.sinon.stub(), 
+    this.collectionStub = { findOne: this.sinon.stub(),
+                            insert: this.sinon.stub(),
                             update: this.sinon.stub() };
-    this.dbStub = { addUser: this.sinon.stub(), 
-                    collectionNames: this.sinon.stub(), 
-                    createCollection: this.sinon.stub(), 
+    this.dbStub = { addUser: this.sinon.stub(),
+                    collectionNames: this.sinon.stub(),
+                    createCollection: this.sinon.stub(),
                     collection: this.sinon.stub()
     };
-    this.connectionStub = { db: this.sinon.stub().returns(this.dbStub), 
-      collection: this.sinon.stub(), 
+    this.connectionStub = { db: this.sinon.stub().returns(this.dbStub),
+      collection: this.sinon.stub(),
       close: this.sinon.stub(),
       command: this.sinon.stub()
     };
@@ -348,14 +348,14 @@ describe('Db', function () {
 
   describe('#createShards', function () {
     it('should create shards to the new database', function () {
-      var db = new Db(this.mongopenter, { urls: 'aUrl', 
-        shards: {hosts: ['1.1.1.1', '2.2.2.2']}, 
+      var db = new Db(this.mongopenter, { urls: 'aUrl',
+        shards: {hosts: ['1.1.1.1', '2.2.2.2']},
         setup: { } });
 
       db.databases = [
         { name: 'adatabase', options: { } }
       ];
-      
+
       var connectStub = this.sinon.stub(mongodb, 'connect');
       connectStub.callsArgWith(1, null, this.connectionStub);
 
@@ -370,16 +370,16 @@ describe('Db', function () {
 
   describe('#addShards', function () {
     it('should add shards to the new database', function () {
-      var db = new Db(this.mongopenter, { urls: 'aUrl', 
+      var db = new Db(this.mongopenter, { urls: 'aUrl',
         shards: { keyMap: {'mac': 'apple', 'ubuntu': 'banana'}},
-        setup: { shards : { shardDb: 'adatabase', 
+        setup: { shards : { shardDb: 'adatabase',
                             shardCollection: 'acollection',
                             shardKey: 'akey',
                             shardTags: [{'shard': 'shard0000', 'tag': 'apple'}]}} });
       db.databases = [
         { name: 'adatabase', options: { } }
       ];
-      
+
       var connectStub = this.sinon.stub(mongodb, 'connect');
       connectStub.callsArgWith(1, null, this.connectionStub);
 
