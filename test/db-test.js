@@ -396,7 +396,8 @@ describe('Db', function () {
   });
 
   describe('#addShards', function () {
-    it('should add shards to the new database', function () {
+    it('should add shards to the new database', function (done) {
+      var self = this;
       var db = new Db(this.mongopenter, { urls: 'aUrl',
         shards: { keyMap: {'mac': 'apple', 'ubuntu': 'banana'}},
         setup: { shards : { shardDb: 'adatabase',
@@ -410,22 +411,28 @@ describe('Db', function () {
       var connectStub = this.sinon.stub(mongodb, 'connect');
       connectStub.callsArgWith(1, null, this.connectionStub);
 
-      this.dbStub.collection.callsArgWith(1, null, this.collectionStub);
-
       this.collectionStub.findOne.withArgs({_id: 'shard0000'}).callsArgWith(1, null, {a:1});
       this.collectionStub.update.callsArgWith(2, null, {});
       this.connectionStub.command.callsArgWith(1, null, "res");
 
       var updateStub = {update: this.sinon.stub()};
-      this.dbStub.collection.callsArgWith(1, null, updateStub);
+      updateStub.update.callsArgWith(3, null, 'anItem');
+      this.dbStub.collection = function (collectionName, cb) {
+        if (collectionName === 'shards') {
+          cb(null, self.collectionStub);
+        } else if (collectionName === 'tags') {
+          cb(null, updateStub);
+        }
+      };
 
-      db.addShards(this.cbStub);
-
-      this.collectionStub.findOne.called.should.eql(true);
-      this.collectionStub.update.calledWith({_id: 'shard0000'}).should.eql(true);
-      this.connectionStub.command.calledWith({enableSharding: 'adatabase'}).should.eql(true);
-      this.connectionStub.command.calledWith({shardCollection: 'acollection', key: {shardKey: 1}}).should.eql(true);
-      updateStub.update.called.should.eql(true);
+      db.addShards(function () {
+        self.collectionStub.findOne.called.should.eql(true);
+        self.collectionStub.update.calledWith({_id: 'shard0000'}).should.eql(true);
+        self.connectionStub.command.calledWith({enableSharding: 'adatabase'}).should.eql(true);
+        self.connectionStub.command.calledWith({shardCollection: 'acollection', key: {shardKey: 1}}).should.eql(true);
+        updateStub.update.called.should.eql(true);
+        done();
+      });
     });
 
     it('should just callback if no shards to be added', function (done) {
