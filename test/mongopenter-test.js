@@ -4,7 +4,7 @@ var sinon = require('sinon');
 var path = require('path');
 var async = require('async');
 
-describe('Mongpenter', function () {
+describe('Mongopenter', function () {
 
   beforeEach(function() {
     this.sinon = sinon.sandbox.create();

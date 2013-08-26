@@ -366,6 +366,33 @@ describe('Db', function () {
       this.connectionStub.command.calledWith({addshard: '1.1.1.1'}).should.eql(true);
       this.connectionStub.command.calledWith({addshard: '2.2.2.2'}).should.eql(true);
     });
+
+    it('should just callback if no shards specified', function (done) {
+      var db = new Db(this.mongopenter, { urls: 'aUrl', setup: {} });
+      db.createShards(function () {
+        done();
+      });
+    });
+
+    it('should call back with errors if thrown', function () {
+      var db = new Db(this.mongopenter, { urls: 'aUrl',
+        shards: {hosts: ['1.1.1.1', '2.2.2.2']},
+        setup: { } });
+
+      db.databases = [
+        { name: 'adatabase', options: { } }
+      ];
+
+      var connectStub = this.sinon.stub(mongodb, 'connect');
+      connectStub.callsArgWith(1, null, this.connectionStub);
+
+      this.connectionStub.command.callsArgWith(1, null, { errmsg: "ohgodno" });
+      db.createShards(this.cbStub);
+
+      connectStub.calledWith('aUrl').should.eql(true);
+      this.connectionStub.command.calledWith({addshard: '1.1.1.1'}).should.eql(true);
+      this.cbStub.calledWith('ohgodno').should.eql(true);
+    });
   });
 
   describe('#addShards', function () {
@@ -399,6 +426,13 @@ describe('Db', function () {
       this.connectionStub.command.calledWith({enableSharding: 'adatabase'}).should.eql(true);
       this.connectionStub.command.calledWith({shardCollection: 'acollection', key: {shardKey: 1}}).should.eql(true);
       updateStub.update.called.should.eql(true);
+    });
+
+    it('should just callback if no shards to be added', function (done) {
+      var db = new Db(this.mongopenter, { urls: 'aUrl', setup: {} });
+      db.addShards(function () {
+        done();
+      });
     });
   });
 
